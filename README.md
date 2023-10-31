@@ -151,6 +151,9 @@ pip install -r requirements.txt
 4. Run the app using `flask run --host=0.0.0.0 --port=7091`.
 5. Start worker with `celery -A application.app.celery worker -l INFO`.
 
+### Use your S3- bucket as your vector store
+Pre-requistite
+
 ### Start frontend
 
 Make sure you have Node version 16 or higher.

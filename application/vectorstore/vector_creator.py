@@ -1,11 +1,13 @@
 from application.vectorstore.faiss import FaissStore
 from application.vectorstore.elasticsearch import ElasticsearchStore
+from application.vectorstore.s3_bucket_store import S3BucketStore
 
 
 class VectorCreator:
     vectorstores = {
         'faiss': FaissStore,
-        'elasticsearch':ElasticsearchStore
+        'elasticsearch':ElasticsearchStore,
+        's3': S3BucketStore
     }
 
     @classmethod

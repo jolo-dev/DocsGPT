@@ -6,6 +6,7 @@ from typing import List, Optional
 import dotenv
 import nltk
 import typer
+import boto3
 
 from parser.file.bulk import SimpleDirectoryReader
 from parser.java2doc import extract_functions_and_classes as extract_java
@@ -15,6 +16,7 @@ from parser.py2doc import extract_functions_and_classes as extract_py
 from parser.py2doc import transform_to_docs
 from parser.schema.base import Document
 from parser.token_func import group_split
+from s3_upload import upload_file
 
 dotenv.load_dotenv()
 
@@ -49,6 +51,7 @@ def ingest(yes: bool = typer.Option(False, "-y", "--yes", prompt=False,
            token_check: Optional[bool] = typer.Option(True, help="Whether to group small documents and split large."),
            min_tokens: Optional[int] = typer.Option(150, help="Minimum number of tokens to not group."),
            max_tokens: Optional[int] = typer.Option(2000, help="Maximum number of tokens to not split."),
+           s3_upload: Optional[bool] = typer.Option(False, help="Whether to upload to S3.")
            ):
     """
         Creates index from specified location or files.
@@ -95,6 +98,19 @@ def ingest(yes: bool = typer.Option(False, "-y", "--yes", prompt=False,
 
     for directory, folder_name in zip(dir, folder_names):
         process_one_docs(directory, folder_name)
+
+    if s3_upload:
+        bucket = os.getenv("S3_BUCKET_NAME")
+        if not bucket:
+            raise Exception("S3_BUCKET_NAME not set")
+
+        print("Uploading to S3...")
+        for folder, subfolders, files in os.walk('outputs'):
+            for file in files:
+                file_path = os.path.join(folder, file)
+                relative_path = os.path.relpath(file_path, "outputs")
+                print(relative_path)
+                upload_file(file_path, bucket, relative_path)
 
 
 @app.command()

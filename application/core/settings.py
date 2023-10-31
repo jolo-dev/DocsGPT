@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     MODEL_PATH: str = os.path.join(current_dir, "models/docsgpt-7b-f16.gguf")
     TOKENS_MAX_HISTORY: int = 150
     UPLOAD_FOLDER: str = "inputs"
-    VECTOR_STORE: str = "faiss"  # "faiss" or "elasticsearch"
+    VECTOR_STORE: str = "s3"  # "faiss" or "elasticsearch" or "s3" --> Should be configurable via .env?
 
     API_URL: str = "http://localhost:7091"  # backend url for celery worker
 
@@ -37,6 +37,15 @@ class Settings(BaseSettings):
     SAGEMAKER_REGION: str = None # SageMaker region name
     SAGEMAKER_ACCESS_KEY: str = None # SageMaker access key
     SAGEMAKER_SECRET_KEY: str = None # SageMaker secret key
+
+    # To use the Documentloader for AWS S3 we need AWS Config
+    S3_BUCKET_NAME: str = None # S3 bucket name
+    AWS_DEFAULT_REGION: str = None # AWS region name otherwise default region will be used
+    AWS_ACCESS_KEY_ID: str = None # AWS access key
+    AWS_SECRET_ACCESS_KEY: str = None # AWS secret key
+    AWS_PROFILE: str = None # AWS profile name
+    AWS_ASSUME_ROLE_ARN: str = None # AWS role arn
+    AWS_SESSION_TOKEN: str = None # AWS session token
 
 
 path = Path(__file__).parent.parent.absolute()
